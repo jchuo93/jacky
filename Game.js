@@ -1,4 +1,3 @@
-
 FindX.Game = function(game) {
     this.randomNumberTop;
     this.randomNumberBottom;
@@ -11,6 +10,9 @@ FindX.Game = function(game) {
     this.showUnderLine;
     this.showResult;
     this.topNumberText;
+    this.timer;
+    this.timerEvent;
+    this.text;
 
 };
 
@@ -29,11 +31,12 @@ FindX.Game.prototype = {
         this.stage.backgroundColor = '#99CCFF';  
         this.mathScene();
         this.showButtons();
+        this.gameTimer();
+        this.update();
+        this.render();
+        this.endTimer();
+        this.formatTime();
         
-    },
-    //does not work....
-    gameTimer: function() {
-        this.time.events.add(Phaser.Timer.SECOND * 0, 0, 180, 0, false, this, this.Game, null);
     },
     
     //create the math equation
@@ -110,6 +113,40 @@ FindX.Game.prototype = {
     update: function() {
         
         this.input.onDown.addOnce(this.loopClick, this);
-    }
+    },
+    
+    gameTimer: function() {  
+        // Create a custom timer
+        timer = this.game.time.create();
+        
+        // Create a delayed event 1m and 30s from now
+        timerEvent = timer.add(Phaser.Timer.MINUTE * 1 + Phaser.Timer.SECOND * 30, this.endTimer, this);
+        
+        // Start the timer
+        timer.start();
+    },
+    update: function () {
+        
+    },
+    render: function () {
+        // If our timer is running, show the time in a nicely formatted way, else show 'Done!'
+        if (timer.running) {
+            this.game.debug.text(this.formatTime(Math.round((timerEvent.delay - timer.ms) / 1000)), 2, 14, "#ff0");
+        }
+        else {
+            this.game.debug.text("Done!", 2, 14, "#0f0");
+        }
+    },
+    endTimer: function() {
+        // Stop the timer when the delayed event triggers
+        timer.stop();
+    },
+    formatTime: function(s) {
+        // Convert seconds (s) to a nicely formatted and padded time string
+        var minutes = "0" + Math.floor(s / 60);
+        var seconds = "0" + (s - minutes * 60);
+        return minutes.substr(-2) + ":" + seconds.substr(-2);   
+    }   
+
         
 };
