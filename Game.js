@@ -10,10 +10,14 @@ FindX.Game = function(game) {
     this.showUnderLine;
     this.showResult;
     this.topNumberText;
+    /*
     this.timer;
     this.timerEvent;
     this.text;
-
+    */
+    this.counter = 100;
+    this.text = 0;
+    this.game;
 };
 
 FindX.Game.prototype = {
@@ -31,12 +35,16 @@ FindX.Game.prototype = {
         this.stage.backgroundColor = '#99CCFF';  
         this.mathScene();
         this.showButtons();
-        this.gameTimer();
+        /*this.gameTimer();
         this.update();
         this.render();
         this.endTimer();
         this.formatTime();
-        
+        */
+        this.text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
+    this.text.anchor.setTo(0.5, 0.5);
+        this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
+        this.updateCounter();
     },
     
     //create the math equation
@@ -115,7 +123,7 @@ FindX.Game.prototype = {
         this.input.onDown.addOnce(this.loopClick, this);
     },
     
-    gameTimer: function() {  
+    /*gameTimer: function() {  
         // Create a custom timer
         timer = this.game.time.create();
         
@@ -147,6 +155,16 @@ FindX.Game.prototype = {
         var seconds = "0" + (s - minutes * 60);
         return minutes.substr(-2) + ":" + seconds.substr(-2);   
     }   
+    */
+    updateCounter() {
+        this.counter--;
 
-        
+        this.text.setText('Counter: ' + this.counter);
+    
+    },
+    
+    render() {
+        this.game.debug.text("Time until event: " + this.game.time.events.duration.toFixed(0), 32, 32);
+        this.game.debug.text("Next tick: " + this.game.time.events.next.toFixed(0), 32, 64)
+    }
 };
