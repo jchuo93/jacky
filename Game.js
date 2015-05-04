@@ -41,7 +41,7 @@ FindX.Game.prototype = {
         this.endTimer();
         this.formatTime();
         */
-        this.text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
+        this.text = this.game.add.text(this.game.world.centerX-250, this.game.world.centerY-450, 'Counter: 0', { font: "32px Arial", fill: "#ffffff", align: "center" });
     this.text.anchor.setTo(0.5, 0.5);
         this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
         this.updateCounter();
@@ -159,12 +159,13 @@ FindX.Game.prototype = {
     updateCounter() {
         this.counter--;
 
-        this.text.setText('Counter: ' + this.counter);
+        this.text.setText(' ' + this.counter);
     
     },
-    
+    /*
     render() {
         this.game.debug.text("Time until event: " + this.game.time.events.duration.toFixed(0), 32, 32);
         this.game.debug.text("Next tick: " + this.game.time.events.next.toFixed(0), 32, 64)
     }
+*/
 };
