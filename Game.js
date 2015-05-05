@@ -28,6 +28,7 @@ FindX.Game = function(game) {
     this.skipButton;
     this.timer = 2;
     this.showTimer;
+    this.timeEvents;
     
 };
 
@@ -37,11 +38,12 @@ FindX.Game.prototype = {
        
         this.stage.backgroundColor = '#99CCFF';
         this.mathScene();  
-        
+        //not the correct solution
+        this.nextEquation();
         this.add.bitmapText(5, 5, 'gamefont',  'Time: ', 50);
         this.showTimer  = this.add.bitmapText(160, 35, 'gamefont',  '' + this.timer, 50);
         this.showTimer.anchor.setTo(0.5, 0.5);
-        this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);    
+        this.timeEvents = this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);    
         
     },
       
@@ -277,8 +279,9 @@ FindX.Game.prototype = {
     
     update: function() {
          if(this.timer == 0){
-            this.timer.destroy();  
+            this.time.events.remove(this.timeEvents);  
 		  this.state.start('GameOver');
+             this.timer = 2;
         }
        
     }
