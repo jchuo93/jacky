@@ -1,6 +1,7 @@
 FindX.GameOver = function(game) {
     this.gameoverBG;
     this.gameoverPrompt;
+    this.gameoverPrompt2;
     
 }
 
@@ -10,10 +11,13 @@ FindX.GameOver.prototype = {
         
 		gameoverBG = this.add.image(0, 0, 'gameoverskull');
 		gameoverBG.inputEnabled = true;
-		gameoverPrompt = this.add.button(this.world.centerX-100, this.world.centerY+350, 'homePlay', this.startGame, this);
-        //this.startPrompt.anchor.setTo(0.5, 0.5);
+		gameoverPrompt = this.add.button(this.world.centerX-100, this.world.centerY+280, 'gameoverplay', this.restartGame, this);
+        gameoverPrompt2 = this.add.button(this.world.centerX-100, this.world.centerY+350, 'gameoverquit', this.quitGame, this);
 	},
-	startGame: function (pointer) {
+	restartGame: function (pointer) {
+		this.state.start('Game');
+	},
+    quitGame: function (pointer) {
 		this.state.start('StartMenu');
 	}
 };

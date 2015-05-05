@@ -20,6 +20,8 @@ FindX.Preloader.prototype = {
         this.load.image('skip','images/SKIP.png');
         this.load.image('loot','images/LOOT.png');
         this.load.image('gameoverskull','images/GameOver.png');
+        this.load.image('gameoverplay','images/GameOverPLAY.png');
+        this.load.image('gameoverquit','images/GameOverQUIT.png');
 	},
 
 	create: function () {

@@ -29,6 +29,9 @@ FindX.Game = function(game) {
     this.timer = 2;
     this.showTimer;
     this.timeEvents;
+    this.userAns = false; 
+    this.userFalseAns = false; 
+    this.timerConstant = 5; 
     
 };
 
@@ -204,7 +207,7 @@ FindX.Game.prototype = {
     checkAnswer: function(ans, bNumber){
         
         if(ans == this.choice){
-            
+            this.userAns = true;
             switch(bNumber) {
                     
                 case 1 : this.choice1.tint = 0xff00;
@@ -214,9 +217,12 @@ FindX.Game.prototype = {
                 default : this.choice3.tint = 0xff00
                             break;
             }
-            
             this.nextEquation();            
-        }    
+        } 
+        else { 
+            this.userAns = false; 
+            this.userFalseAns = true; 
+        } 
     },
     
   
@@ -278,11 +284,20 @@ FindX.Game.prototype = {
     
     
     update: function() {
-         if(this.timer == 0){
+         if(this.timer <= 0){
             this.time.events.remove(this.timeEvents);  
 		  this.state.start('GameOver');
              this.timer = 2;
         }
+        if(this.userAns == true) { 
+           this.timer += this.timerConstant;   
+            this.userAns = false; 
+        } 
+        else if(this.userFalseAns == true) { 
+            this.timer -= (this.timerConstant + 3); 
+            this.userFalseAns = false; 
+            this.nextEquation(); 
+        } 
        
     }
     
