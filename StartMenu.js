@@ -10,7 +10,7 @@ FindX.StartMenu.prototype = {
         this.ding = this.add.audio('select_audio');
 		startBG = this.add.image(0, 0, 'titlescreen');
 		startBG.inputEnabled = true;
-		startPrompt = this.add.button(this.world.centerX-105, this.world.centerY+80, 'homePlay', this.startGame, this, null, null, null, null);
+		startPrompt = this.add.button(this.world.centerX-105, this.world.centerY+80, 'homePlay', this.startGame, this);
 
 	},
 	startGame: function (pointer) {

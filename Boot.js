@@ -13,14 +13,14 @@ FindX.Boot.prototype = {
 		this.stage.disableVisibilityChange = false;
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.scale.maxWidth = 540;
-        this.scale.maxHeight = 960;
+        this.scale.maxHeight = window.innerHeight;
 		this.scale.minWidth = 320;
 		this.scale.minHeight = 480;
 		this.scale.pageAlignHorizontally = true;
 		this.scale.pageAlignVertically = true;
 		this.stage.forcePortrait = true;
-		this.scale.setScreenSize(true);
-
+		this.scale.setScreenSize(true);  
+        
 		this.input.addPointer();
 		this.stage.backgroundColor = '#99CCFF';
         
