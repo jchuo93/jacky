@@ -32,6 +32,7 @@ FindX.Game = function(game) {
     this.userAns = false; 
     this.userFalseAns = false; 
     this.timerConstant = 5; 
+    this.wrongding;
     
 };
 
@@ -47,7 +48,7 @@ FindX.Game.prototype = {
         this.showTimer  = this.add.bitmapText(160, 35, 'gamefont',  '' + this.timer, 50);
         this.showTimer.anchor.setTo(0.5, 0.5);
         this.timeEvents = this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);    
-        
+        this.wrongding = this.add.audio('wrong_audio');
     },
       
     //create the math equation
@@ -295,7 +296,8 @@ FindX.Game.prototype = {
         } 
         else if(this.userFalseAns == true) { 
             this.timer -= (this.timerConstant + 3); 
-            this.userFalseAns = false; 
+            this.userFalseAns = false;
+            this.wrongding.play();
             this.nextEquation(); 
         } 
        

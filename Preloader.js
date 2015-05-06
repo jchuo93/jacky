@@ -15,6 +15,8 @@ FindX.Preloader.prototype = {
         this.load.bitmapFont('gamefont', 'font/font.png', 'font/font.fnt');
         this.load.image('homePlay', 'images/HomePlay.png');
         this.load.audio('game_audio', 'audio/bgm.mp3');
+        this.load.audio('select_audio', 'audio/select.mp3');
+        this.load.audio('wrong_audio', 'audio/argh.mp3');
         this.load.image('X', 'images/X.png');
         this.load.image('pause','images/PAUSE.png');
         this.load.image('skip','images/SKIP.png');
