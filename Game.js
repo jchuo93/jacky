@@ -36,7 +36,7 @@ FindX.Game = function(game) {
     this.showcoins;
     this.addcoin = 1;
     this.wrongding;
-    
+    this.coinding;
 };
 
 FindX.Game.prototype = {
@@ -54,6 +54,7 @@ FindX.Game.prototype = {
         this.showcoins = this.add.bitmapText(130, 160, 'gamefont',  '' + this.coins, 50);
         this.showcoins.anchor.setTo(0.5, 0.5);
         this.wrongding = this.add.audio('wrong_audio');
+        this.coinding = this.add.audio('coin_audio');
     },
       
     //create the math equation
@@ -287,11 +288,13 @@ FindX.Game.prototype = {
         
         this.mathScene();      
     },
+    
     //skip button function
     skipcondition: function(){
         if(this.coins >= 5){
             this.coins -= 5;
             this.showcoins.setText('' + this.coins);
+            this.coinding.play();
             this.nextEquation();
         
         }

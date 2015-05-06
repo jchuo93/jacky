@@ -17,6 +17,7 @@ FindX.Preloader.prototype = {
         this.load.audio('game_audio', 'audio/bgm.mp3');
         this.load.audio('select_audio', 'audio/select.mp3');
         this.load.audio('wrong_audio', 'audio/argh.mp3');
+        this.load.audio('coin_audio', 'audio/coinbag.mp3');
         this.load.image('X', 'images/X.png');
         this.load.image('pause','images/PAUSE.png');
         this.load.image('skip','images/SKIP.png');
