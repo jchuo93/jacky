@@ -26,12 +26,15 @@ FindX.Game = function(game) {
     this.choiceButtons;
     this.randTemp = [1, 2, 3];
     this.skipButton;
-    this.timer = 2;
+    this.timer = 5;
     this.showTimer;
     this.timeEvents;
     this.userAns = false; 
     this.userFalseAns = false; 
     this.timerConstant = 5; 
+    this.coins = 0;
+    this.showcoins;
+    this.addcoin = 1;
     this.wrongding;
     
 };
@@ -47,7 +50,9 @@ FindX.Game.prototype = {
         this.add.bitmapText(5, 5, 'gamefont',  'Time: ', 50);
         this.showTimer  = this.add.bitmapText(160, 35, 'gamefont',  '' + this.timer, 50);
         this.showTimer.anchor.setTo(0.5, 0.5);
-        this.timeEvents = this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);    
+        this.timeEvents = this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this); 
+        this.showcoins = this.add.bitmapText(130, 160, 'gamefont',  '' + this.coins, 50);
+        this.showcoins.anchor.setTo(0.5, 0.5);
         this.wrongding = this.add.audio('wrong_audio');
     },
       
@@ -74,7 +79,7 @@ FindX.Game.prototype = {
         this.choice3.events.onInputDown.addOnce(this.check(this.ansRightButton, 3), this);
         
         //skip
-        this.skipButton.events.onInputDown.addOnce(this.nextEquation, this);
+        this.skipButton.events.onInputDown.addOnce(this.skipcondition, this);
    },
     
     //randomize the location of X 
@@ -282,16 +287,27 @@ FindX.Game.prototype = {
         
         this.mathScene();      
     },
-    
+    //skip button function
+    skipcondition: function(){
+        if(this.coins >= 5){
+            this.coins -= 5;
+            this.showcoins.setText('' + this.coins);
+            this.nextEquation();
+        
+        }
+    },
     
     update: function() {
          if(this.timer <= 0){
             this.time.events.remove(this.timeEvents);  
 		  this.state.start('GameOver');
              this.timer = 2;
+             this.coins = 0;
         }
         if(this.userAns == true) { 
-           this.timer += this.timerConstant;   
+           this.timer += this.timerConstant; 
+            this.coins += this.addcoin;
+            this.showcoins.setText('' + this.coins);
             this.userAns = false; 
         } 
         else if(this.userFalseAns == true) { 
@@ -301,8 +317,5 @@ FindX.Game.prototype = {
             this.nextEquation(); 
         } 
        
-    }
-    
-   
-    
+    } 
 };
