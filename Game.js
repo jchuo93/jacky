@@ -2,7 +2,7 @@
 FindX.Game = function(game) {
     this.randomNumberTop;
     this.randomNumberBottom;
-    this.operator = ['+', '-' ,'*', '/'];
+    this.operator;
     this.result;
     this.randomOperation;
     this.showNumberTop;
@@ -24,82 +24,111 @@ FindX.Game = function(game) {
     this.ansLeftButton;
     this.ansRightButton;
     this.choiceButtons;
-    this.randTemp = [1, 2, 3];
+    this.randTemp;
     this.skipButton;
-    this.timer = 5;
+    this.timer;
     this.showTimer;
     this.timeEvents;
-    this.userAns = false; 
-    this.userFalseAns = false; 
-    this.timerConstant = 5; 
-    this.coins = 0;
+    this.score;
+    this.showScore;
+    this.userAns; 
+    this.userFalseAns; 
+    this.timerConstant; 
+    this.coins;
     this.showcoins;
-    this.addcoin = 1;
+    this.addcoin;
     this.wrongding;
     this.coinding;
+    
+    this.difficultyTracker;
+    this.consecutiveAns;
+    
+    // number generator min/max
+    this.minTopNumber;
+    this.maxTopNumber;
 };
 
 FindX.Game.prototype = {
     
-    create: function() {    
+    create: function() {
+        this.game.stage.disableVisibilityChange = true;
+        this.operator = ['+', '-' ,'*', '/'];
+        this.randTemp = [1, 2, 3];
+        this.timer = 7; 
+        this.userAns = false; 
+        this.userFalseAns = false; 
+        this.timerConstant = 2;
+        this.consecutiveAns = 0;
+        this.coins = 0;
+        this.addcoin = 1;
+        this.score = 0;
+        this.minTopNumber = 0;
+        this.maxTopNumber = 9;
+        this.difficultyTracker = 1;
        
-        this.stage.backgroundColor = '#99CCFF';
+        this.add.image(0, 0, 'titlescreen');
+        this.add.image(this.world.centerX, 100, 'wheelBanner').anchor.setTo(0.5,0.5);
+        this.add.image(50, 70, 'loot', null); 
         this.mathScene();  
-        //not the correct solution
-        this.nextEquation();
-        this.add.bitmapText(5, 5, 'gamefont',  'Time: ', 50);
-        this.showTimer  = this.add.bitmapText(160, 35, 'gamefont',  '' + this.timer, 50);
+
+
+        this.showTimer  = this.add.bitmapText(this.world.centerX-1, 98, 'gamefont',  '' + this.timer, 42);
         this.showTimer.anchor.setTo(0.5, 0.5);
         this.timeEvents = this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this); 
-        this.showcoins = this.add.bitmapText(130, 160, 'gamefont',  '' + this.coins, 50);
+        
+        // coins
+        this.showcoins = this.add.bitmapText(110, 90, 'gamefont',  '' + this.coins, 40);
         this.showcoins.anchor.setTo(0.5, 0.5);
+        
+        //score
+        this.showScore = this.add.bitmapText(400, 70, 'gamefont',  '' + this.score, 40);       
         this.wrongding = this.add.audio('wrong_audio');
-        this.coinding = this.add.audio('coin_audio');
+        this.coinding = this.add.audio('coin_audio');        
+        
+        //skip button
+        this.skipButton = this.add.button(420, 200, 'skip', this.skipcondition, this);
+        this.skipButton.frame = 1;
+        this.skipButton.height = 100;
+        this.skipButton.width = 100;
+        
     },
-      
-    //create the math equation
-    mathScene: function() {
-
-        this.randomGenerator();
-        this.currentOperator = this.solveEquation();
-        
-        this.showXlocation();
-        this.showButtons();
-        
-        this.showNumberTop = this.add.bitmapText(this.world.centerX, this.world.centerY-200, 'gamefont',  '' + this.randomNumberTop, 105);
-        this.showNumberBottom =  this.add.bitmapText(this.world.centerX, this.world.centerY-100, 'gamefont', '' + this.randomNumberBottom, 105);
-        this.showOperator = this.add.bitmapText(this.world.centerX - 60, this.world.centerY-90, 'gamefont', '' + this.currentOperator, 105);
-        this.showOperator.anchor.setTo(0.5, 0.5);	
-        this.showUnderLine = this.add.bitmapText(this.world.centerX - 60, this.world.centerY-100, 'gamefont', '__', 105);
-        this.showResult = this.add.bitmapText(this.world.centerX + 5, this.world.centerY + 75, 'gamefont', '' + this.result, 105);
-        this.showResult.anchor.setTo(0.5, 0.5);	
-        
-        
-        this.choice1.events.onInputDown.addOnce(this.check(this.ansLeftButton, 1), this);
-        this.choice2.events.onInputDown.addOnce(this.check(this.ansMidButton, 2), this);
-        this.choice3.events.onInputDown.addOnce(this.check(this.ansRightButton, 3), this);
-        
-        //skip
-        this.skipButton.events.onInputDown.addOnce(this.skipcondition, this);
-   },
     
-    //randomize the location of X 
-    showXlocation: function() {
+    // returns anonymous function to call check answer required by addOnce function
+    check: function(ans, bNumber) {
         
-        this.randomX = Math.floor(Math.random() * 4);
+        return function () {
+            
+          this.checkAnswer(ans, bNumber);
+        };
+              
+    },
+    
+    // check the ans and change background color(background color is not yet working..
+    checkAnswer: function(ans, bNumber){
         
-        switch(this.randomX) {
-            case 1 : this.choice = this.randomNumberTop; 
-                     this.randomNumberTop = '?';
-                     break;
-            case 2 : this.choice = this.randomNumberBottom; 
-                     this.randomNumberBottom = '?';
-                     break;
-            default: this.choice = this.result;
-                     this.result = '?';
-                     break;
+        if(ans == this.choice){
+            this.userAns = true;
+            this.difficultyTracker++;
+            this.nextEquation();            
+        } 
+        else { 
+            this.userAns = false; 
+            this.userFalseAns = true; 
+        } 
+    },
+    
+    // sets the difficulty of the (still needs to be updated)
+    difficultySetter : function() {
+        
+        if(this.difficultyTracker >= 10) {        
+            this.minTopNumber = 10;
+            this.maxTopNumber = 99;
         }
-        
+        else if(this.difficultyTracker >= 5){
+            this.minTopNumber = 0;
+            this.maxTopNumber = 9;      
+        } 
+         
     },
     
     // draw the yellow buttons with rounded curve
@@ -124,16 +153,78 @@ FindX.Game.prototype = {
         return this.choiceButtons;
         
     },
-    
-    // function to call to update the timer
-    updateCounter: function() {
-        this.timer--;
+      
+    //create the math equation
+    mathScene: function() {
 
-        this.showTimer.setText('' + this.timer);
+        this.randomGenerator();
+        this.currentOperator = this.solveEquation();
+        
+        this.showXlocation();
+        this.showButtons();
+        
+        this.showNumberTop = this.add.bitmapText(this.world.centerX, this.world.centerY-200, 'gamefont',  '' + this.randomNumberTop, 105);
+        this.showNumberTop.anchor.setTo(0.5, 0.5);	
+        this.showNumberBottom =  this.add.bitmapText(this.world.centerX, this.world.centerY-100, 'gamefont', '' + this.randomNumberBottom, 105);
+        this.showNumberBottom.anchor.setTo(0.5, 0.5)
+        this.showOperator = this.add.bitmapText(this.world.centerX - 60, this.world.centerY-90, 'gamefont', '' + this.currentOperator, 105);
+        this.showOperator.anchor.setTo(0.5, 0.5);	
+        this.showUnderLine = this.add.bitmapText(this.world.centerX - 60, this.world.centerY-100, 'gamefont', '__', 105);
+        this.showResult = this.add.bitmapText(this.world.centerX + 5, this.world.centerY + 75, 'gamefont', '' + this.result, 105);
+        this.showResult.anchor.setTo(0.5, 0.5);	
+        
+        
+        this.choice1.events.onInputDown.addOnce(this.check(this.ansLeftButton, 1), this);
+        this.choice2.events.onInputDown.addOnce(this.check(this.ansMidButton, 2), this);
+        this.choice3.events.onInputDown.addOnce(this.check(this.ansRightButton, 3), this);
+        
+   },
     
+    // show nice equation
+    nextEquation: function() {
+           
+        this.showNumberTop.destroy(); 
+        this.showNumberBottom.destroy(); 
+        this.showOperator.destroy(); 
+        this.showUnderLine.destroy();
+        this.showResult.destroy();
+        this.choice1.destroy();
+        this.showChoice1.destroy();
+        this.showChoice2.destroy();
+        this.showChoice3.destroy();
+        this.randTemp = [1, 2, 3];
+        
+        this.mathScene();      
     },
     
-    //display buttons
+    //randomize numbers
+    randomGenerator: function() {
+    
+        this.randomOperation = this.game.rnd.integerInRange(0, 3);
+        this.randomNumberTop = this.game.rnd.integerInRange(this.minTopNumber , this.maxTopNumber);
+        this.randomNumberBottom = this.game.rnd.integerInRange(0, 9);       
+    },
+    
+    //randomize the choice location among the three yellow buttons
+    setChoiceButtons: function() {
+             
+        var cur = this.choice;
+        var rand = Math.floor(Math.random() * this.randTemp.length);
+             
+        if(this.randTemp[rand] == 1){
+            this.randTemp.splice(this.randTemp.indexOf(1), 1);
+            return (cur >=  99) ? 97 : cur + 1;   
+        } else if(this.randTemp[rand] == 2){
+            this.randTemp.splice(this.randTemp.indexOf(2), 1);
+            return (cur <=  0) ? 2 : cur - 1;
+        } else if (this.randTemp[rand] == 3){ 
+            this.randTemp.splice(this.randTemp.indexOf(3), 1);
+            return cur;
+        }
+         
+    },
+    
+     //display buttons
     showButtons: function(){
                
         //catching the choices;
@@ -159,7 +250,6 @@ FindX.Game.prototype = {
         this.showChoice2.x = 78;
         this.showChoice2.y = 74;
         
-        
         //button for choice 3 || right button
         this.choice3 = this.add.sprite(370, 750, this.drawButtons(0, 0, 160, 160, 20, "yellow" ));
         this.choice3.inputEnabled = true;
@@ -168,80 +258,39 @@ FindX.Game.prototype = {
         this.showChoice3.anchor.setTo(0.5, 0.5);
         this.showChoice3.x = 78;
         this.showChoice3.y = 74;
-        
-        //reset tints || button colors
-//        this.choice1.tint = 0xffff33;
-//        this.choice2.tint = 0xffff33;
-//        this.choice3.tint = 0xffff33;
-        
-        
-        this.add.image(this.world.centerX-250, this.world.centerY-350, 'loot', null);       
-        this.add.button(this.world.centerX-250, this.world.centerY+125, 'pause', this.pauseMenu, this);
-        this.skipButton = this.add.button(this.world.centerX+125, this.world.centerY+125, 'skip', this.randomGenerator, this);
-        this.skipButton.inputEnabled = true;
-        
+             
     },
     
-    //randomize numbers
-    randomGenerator: function() {
-    
-        this.randomOperation = Math.floor(Math.random() * 4);
-        this.randomNumberTop = Math.floor((Math.random() * 9) + 1);
-        this.randomNumberBottom = Math.floor((Math.random() * 9) + 1);
+    //randomize the location of X 
+    showXlocation: function() {
         
-    },
-    
-    //randomize the choice location among the three yellow buttons
-    setChoiceButtons: function() {
-             
-        var cur = this.choice;
-        var rand = Math.floor(Math.random() * this.randTemp.length);
-             
-        if(this.randTemp[rand] == 1){
-            this.randTemp.splice(this.randTemp.indexOf(1), 1);
-            return cur + 1;   
-        } else if(this.randTemp[rand] == 2){
-            this.randTemp.splice(this.randTemp.indexOf(2), 1);
-            return cur - 1;
-        } else if (this.randTemp[rand] == 3){
-            this.randTemp.splice(this.randTemp.indexOf(3), 1);
-            return cur;
+        this.randomX = Math.floor(Math.random() * 4);
+        
+        switch(this.randomX) {
+            case 1 : this.choice = this.randomNumberTop; 
+                     this.randomNumberTop = '?';
+                     break;
+            case 2 : this.choice = this.randomNumberBottom; 
+                     this.randomNumberBottom = '?';
+                     break;
+            default: this.choice = this.result;
+                     this.result = '?';
+                     break;
         }
-         
+        
     },
     
-    // check the ans and change background color(background color is not yet working..
-    checkAnswer: function(ans, bNumber){
+     //skip button function
+    skipcondition: function(){
+        if(this.coins >= 5){
+            this.coins -= 5;
+            this.difficultyTracker = (this.difficultyTracker >= 10) ? 5 : 1;
+            this.showcoins.setText('' + this.coins);
+            this.coinding.play();
+            this.difficultySetter();
+            this.nextEquation();
         
-        if(ans == this.choice){
-            this.userAns = true;
-            switch(bNumber) {
-                    
-                case 1 : this.choice1.tint = 0xff00;
-                            break;
-                case 2 : this.choice2.tint = 0xff00
-                            break;
-                default : this.choice3.tint = 0xff00
-                            break;
-            }
-            this.nextEquation();            
-        } 
-        else { 
-            this.userAns = false; 
-            this.userFalseAns = true; 
-        } 
-    },
-    
-  
-    
-    // returns anonymous function to call check answer required by addOnce function
-    check: function(ans, bNumber) {
-        
-        return function () {
-            
-          this.checkAnswer(ans, bNumber);
-        };
-              
+        }
     },
     
     //solve the equation and set operator to be displayed
@@ -263,7 +312,7 @@ FindX.Game.prototype = {
                             break;
         }
         
-        if(((this.result % 1) != 0) || this.result < 0){
+        if(((this.result % 1) != 0) || this.result <= 0 || this.result > 100){
             
             this.randomGenerator();
             this.solveEquation();
@@ -271,54 +320,61 @@ FindX.Game.prototype = {
         
          return this.showCurrentOperator;     
     },
-       
-    // show nice equation
-    nextEquation: function() {
            
-        this.showNumberTop.destroy(); 
-        this.showNumberBottom.destroy(); 
-        this.showOperator.destroy(); 
-        this.showUnderLine.destroy();
-        this.showResult.destroy();
-        this.choice1.destroy();
-        this.showChoice1.destroy();
-        this.showChoice2.destroy();
-        this.showChoice3.destroy();
-        this.randTemp = [1, 2, 3];
-        
-        this.mathScene();      
-    },
+    // function to call to update the timer
+    updateCounter: function() {
+        this.timer--;
+
+        this.showTimer.setText('' + this.timer);
     
-    //skip button function
-    skipcondition: function(){
-        if(this.coins >= 5){
-            this.coins -= 5;
-            this.showcoins.setText('' + this.coins);
-            this.coinding.play();
-            this.nextEquation();
-        
-        }
     },
-    
+       
     update: function() {
          if(this.timer <= 0){
-            this.time.events.remove(this.timeEvents);  
-		  this.state.start('GameOver');
-             this.timer = 2;
-             this.coins = 0;
-        }
+             
+             var highscore = localStorage.getItem("highscore");
+             
+                if(highscore !== null){
+                   if (this.score > highscore) {
+                      localStorage.setItem("highscore", this.score );
+                      }
+                }else{
+                      localStorage.setItem("highscore", this.score );            
+                }
+             
+		     this.state.start('GameOver');
+
+            }
+        
         if(this.userAns == true) { 
            this.timer += this.timerConstant; 
-            this.coins += this.addcoin;
-            this.showcoins.setText('' + this.coins);
-            this.userAns = false; 
-        } 
-        else if(this.userFalseAns == true) { 
+            this.consecutiveAns++;
+            this.score += 10;
+            this.coinding.play();
+            this.showScore.setText('' + this.score);
+            this.userAns = false;      
+        } else if(this.userFalseAns == true) { 
             this.timer -= (this.timerConstant + 3); 
             this.userFalseAns = false;
             this.wrongding.play();
             this.nextEquation(); 
         } 
+        
+        // added consecutive ans to 3 then add a coin after 
+        if(this.consecutiveAns == 3) {
+            this.consecutiveAns = 0
+            this.coins += this.addcoin;
+            this.showcoins.setText('' + this.coins);
+        }
+        
+        if(this.coins < 5) {
+         
+            this.skipButton.frame = 1;
+        }else if(this.coins >= 5) {
+            this.skipButton.frame = 0;  
+        }
+        
+        this.difficultySetter();
        
     } 
 };

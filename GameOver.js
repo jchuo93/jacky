@@ -13,6 +13,8 @@ FindX.GameOver.prototype = {
 		gameoverBG.inputEnabled = true;
 		gameoverPrompt = this.add.button(this.world.centerX-100, this.world.centerY+280, 'gameoverplay', this.restartGame, this);
         gameoverPrompt2 = this.add.button(this.world.centerX-100, this.world.centerY+350, 'gameoverquit', this.quitGame, this);
+        
+        console.log(  localStorage.getItem( 'highscore' )  );
 	},
 	restartGame: function (pointer) {
 		this.state.start('Game');
