@@ -54,10 +54,10 @@ FindX.Game.prototype = {
         this.game.stage.disableVisibilityChange = true;
         this.operator = ['+', '-' ,'*', '/'];
         this.randTemp = [1, 2, 3];
-        this.timer = 7; 
+        this.timer = 5; 
         this.userAns = false; 
         this.userFalseAns = false; 
-        this.timerConstant = 2;
+        this.timerConstant = 5;
         this.consecutiveAns = 0;
         this.coins = 0;
         this.addcoin = 1;
@@ -331,7 +331,7 @@ FindX.Game.prototype = {
        
     update: function() {
          if(this.timer <= 0){
-             
+             localStorage.setItem("yourscore", this.score);
              var highscore = localStorage.getItem("highscore");
              
                 if(highscore !== null){

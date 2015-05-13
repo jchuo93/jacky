@@ -2,7 +2,6 @@ FindX.GameOver = function(game) {
     this.gameoverBG;
     this.gameoverPrompt;
     this.gameoverPrompt2;
-    
 }
 
 FindX.GameOver.prototype = {
@@ -14,8 +13,27 @@ FindX.GameOver.prototype = {
 		gameoverPrompt = this.add.button(this.world.centerX-100, this.world.centerY+280, 'gameoverplay', this.restartGame, this);
         gameoverPrompt2 = this.add.button(this.world.centerX-100, this.world.centerY+350, 'gameoverquit', this.quitGame, this);
         
-        console.log(  localStorage.getItem( 'highscore' )  );
-	},
+        yourScoreTitle = this.add.bitmapText(0 , 0,'gamefont', 'Your Score: ', 40);
+        yourScoreTitle.x = 100;  
+        yourScoreTitle.y = 23;
+        yourScoreNumber = this.add.bitmapText(0 , 0,'gamefont', localStorage.getItem('yourscore'), 60);
+        yourScoreNumber.anchor.setTo(0.5, 0.5);
+        yourScoreNumber.x = 400;  
+        yourScoreNumber.y = 50;
+        
+//        //console.log(  localStorage.getItem( 'highscore' )  );
+//        var data = 
+//         $.ajax({
+//                url: "https://api.mongolab.com/api/1/databases/findx/HighScore?apiKey=CDvbQJBiWFpyu08aN2PYkWAqi2Q3m0E1&q{}",
+//                type: 'get',
+//                contentType: "application/json" 
+//            });
+//            
+         https://api.mongolab.com/api/1/databases/findx/collections/HighScore?q{"name":{}}&apiKey=CDvbQJBiWFpyu08aN2PYkWAqi2Q3m0E1;
+        
+        console.log();
+
+	}, 
 	restartGame: function (pointer) {
 		this.state.start('Game');
 	},

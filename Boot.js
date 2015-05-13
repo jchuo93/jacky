@@ -26,11 +26,11 @@ FindX.Boot.prototype = {
      */
     create: function() {
         this.input.maxPointers = 1;
-		this.stage.disableVisibilityChange = true;
+		this.stage.disableVisibilityChange = false;
 		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         
         if(window.outerWidth >= 540) {
-            this.scale.maxWidth = 540;
+            this.scale.maxWidth = 450;
             
         } else {
             
@@ -50,5 +50,12 @@ FindX.Boot.prototype = {
 		this.stage.backgroundColor = '#0588b2';
         
         this.state.start('Preloader');
+        
+        
+//        $.ajax( { url: "https://api.mongolab.com/api/1/databases/findx/collections/HighScore?apiKey=CDvbQJBiWFpyu08aN2PYkWAqi2Q3m0E1",
+//		  data: JSON.stringify( { "name" : 1 } ),
+//		  type: 'POST',
+//		  contentType: "application/json" } );
+
     }
 }
