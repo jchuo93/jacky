@@ -34,6 +34,26 @@
 <body>
     <div id="gameContainer"></div>
     <script type="text/javascript">
+        
+        
+      var getName = (localStorage.getItem('name'));
+       
+        
+            if(getName == null) { 
+                var player_name = window.prompt("Please enter your name"); 
+                if(player_name == null) { 
+                    var x = Math.floor((Math.random() * 999));
+                    player_name = "player"; 
+                    localStorage.setItem("name",player_name + x); 
+                } 
+                else { 
+                    
+                    localStorage.setItem("name",player_name); 
+                    console.log(localStorage.getItem('name'));
+                }          
+            } 
+            
+        
         window.onload = function() {
             var game = new Phaser.Game(540, 960, Phaser.AUTO, 'gameContainer');
             game.state.add('Boot', FindX.Boot);
